@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">URL Shortener</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="urlForm">
+                            <div class="mb-3">
+                                <label for="targetUrl" class="form-label">Long URL</label>
+                                <input type="url" class="form-control" id="targetUrl" required 
+                                       placeholder="https://example.com/very/long/url">
+                            </div>
+                            <div class="mb-3">
+                                <label for="customUrl" class="form-label">Custom URL (Optional)</label>
+                                <input type="text" class="form-control" id="customUrl" 
+                                       placeholder="my-custom-url">
+                                <div class="form-text">Leave blank for auto-generated short URL</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Shorten URL</button>
+                        </form>
+
+                        <div id="result" class="mt-4" style="display: none;">
+                            <h5>Shortened URL:</h5>
+                            <div class="input-group">
+                                <input type="text" id="shortUrl" class="form-control" readonly>
+                                <button class="btn btn-outline-secondary" type="button" id="copyButton">
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="error" class="alert alert-danger mt-3" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#urlForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const data = {
+                    target_url: $('#targetUrl').val()
+                };
+                
+                const customUrl = $('#customUrl').val();
+                if (customUrl) {
+                    data.custom_url = customUrl;
+                }
+
+                // Hide any previous results/errors
+                $('#result').hide();
+                $('#error').hide();
+
+                $.ajax({
+                    url: '/url',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function(response) {
+                        const shortUrl = `${window.location.origin}/${response.short_url}`;
+                        $('#shortUrl').val(shortUrl);
+                        $('#result').show();
+                    },
+                    error: function(xhr) {
+                        const error = xhr.responseJSON?.detail || 'An error occurred';
+                        $('#error').text(error).show();
+                    }
+                });
+            });
+
+            $('#copyButton').on('click', function() {
+                const shortUrlInput = document.getElementById('shortUrl');
+                shortUrlInput.select();
+                document.execCommand('copy');
+                
+                // Change button text temporarily
+                const btn = $(this);
+                const originalText = btn.text();
+                btn.text('Copied!');
+                setTimeout(() => btn.text(originalText), 2000);
+            });
+        });
+    </script>
+</body>
+</html>
