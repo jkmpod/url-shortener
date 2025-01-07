@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from app.api.endpoints import router
+from api.endpoints import router
 from app.db.base import engine
 from app.db.models import Base
 from app.core.config import get_settings

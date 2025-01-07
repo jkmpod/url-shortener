@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+validators
+python-dotenv
+pydantic
+pydantic-settings
+python-multipart
+jinja2
+aiofiles
+pytest
+pytest-asyncio
+httpx
+pytest-cov
