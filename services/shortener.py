@@ -11,6 +11,7 @@ from app.core.logging import get_logger
 settings = get_settings()
 logger = get_logger(__name__)
 
+
 def create_short_url(url: str) -> str:
     """Create a short URL using first N characters of MD5 hash"""
     short_url = hashlib.md5(url.encode()).hexdigest()[:settings.AUTO_URL_LENGTH]

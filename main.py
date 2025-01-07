@@ -35,10 +35,40 @@ async def lifespan(app: FastAPI):
     # Cleanup
     logger.info("Shutting down URL Shortener application")
 
-# Initialize FastAPI application
+# Initialize FastAPI application with detailed documentation
 app = FastAPI(
-    title=settings.APP_NAME,
-    version=settings.APP_VERSION,
+    title="URL Shortener API",
+    description="""
+    A modern URL shortening service API that allows you to:
+    
+    * Create shortened URLs
+    * Use custom URL codes
+    * Retrieve original URLs
+    
+    ## Features
+    
+    * **URL Shortening**: Convert long URLs into short, manageable links
+    * **Custom URLs**: Create memorable, custom short URLs
+    * **Input Validation**: Ensures valid URLs and custom codes
+    * **Duplicate Detection**: Prevents URL conflicts
+    
+    ## Usage
+    
+    You can use this API directly or through the web interface available at the root URL.
+    """,
+    version="1.0.0",
+    contact={
+        "name": "Your Name",
+        "url": "https://github.com/yourusername/url-shortener",
+        "email": "your.email@example.com",
+    },
+    license_info={
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+    docs_url="/api/docs",  # Custom docs URL
+    redoc_url="/api/redoc",  # Custom redoc URL
+    openapi_url="/api/openapi.json",  # Custom OpenAPI URL
     debug=settings.DEBUG,
     lifespan=lifespan
 )
@@ -47,7 +77,15 @@ app = FastAPI(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Include API routes
-app.include_router(router, prefix=settings.API_PREFIX)
+app.include_router(
+    router,
+    prefix=settings.API_PREFIX,
+    responses={
+        404: {"description": "Not found"},
+        400: {"description": "Bad request"},
+        500: {"description": "Internal server error"}
+    }
+)
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
