@@ -12,4 +12,4 @@ class URLInfo(URLBase):
     is_custom: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True

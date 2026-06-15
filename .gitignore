@@ -1,0 +1,4 @@
+.aider.chat.history.md
+.aider.input.history
+__pycache__/
+*.pyc

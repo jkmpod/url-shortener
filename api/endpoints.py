@@ -1,5 +1,6 @@
 # app/api/endpoints.py
 from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi.middleware.throttling import ThrottlingMiddleware
 from sqlalchemy.orm import Session
 import validators
 from typing import Dict
@@ -10,6 +11,13 @@ from app.core.logging import get_logger
 
 # Add tags for API documentation organization
 router = APIRouter(tags=["URL Operations"])
+
+# Add rate limiting - 100 requests per minute
+router.add_middleware(
+    ThrottlingMiddleware,
+    rate_limit=100,
+    time_window=60
+)
 logger = get_logger(__name__)
 
 @router.post(

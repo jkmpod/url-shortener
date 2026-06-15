@@ -5,8 +5,8 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app.db.models import URL
 from app.schemas.url import URLBase
-from ..core.config import get_settings
-from ..core.logging import get_logger
+from app.core.config import get_settings
+from app.core.logging import get_logger
 
 settings = get_settings()
 logger = get_logger(__name__)

@@ -22,9 +22,12 @@ def setup_logging() -> None:
     
     # File handler if LOG_FILE is specified
     if settings.LOG_FILE:
-        file_handler = logging.FileHandler(settings.LOG_FILE)
-        file_handler.setFormatter(logging.Formatter(settings.LOG_FORMAT))
-        handlers.append(file_handler)
+        try:
+            file_handler = logging.FileHandler(settings.LOG_FILE)
+            file_handler.setFormatter(logging.Formatter(settings.LOG_FORMAT))
+            handlers.append(file_handler)
+        except Exception as e:
+            console_handler.warning(f"Failed to create file handler: {e}")
     
     # Add handlers to logger
     logger.handlers = handlers
